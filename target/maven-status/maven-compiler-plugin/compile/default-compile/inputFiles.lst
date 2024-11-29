@@ -1,0 +1,13 @@
+/workspaces/monitoreo_PRS1/src/main/java/pe/edu/vallegrande/monitoreo/MonitoreoApplication.java
+/workspaces/monitoreo_PRS1/src/main/java/pe/edu/vallegrande/monitoreo/config/SwaggerConfig.java
+/workspaces/monitoreo_PRS1/src/main/java/pe/edu/vallegrande/monitoreo/dto/PersonaUpdateDTO.java
+/workspaces/monitoreo_PRS1/src/main/java/pe/edu/vallegrande/monitoreo/dto/PersonaWithDetailsDTO.java
+/workspaces/monitoreo_PRS1/src/main/java/pe/edu/vallegrande/monitoreo/model/Education.java
+/workspaces/monitoreo_PRS1/src/main/java/pe/edu/vallegrande/monitoreo/model/Health.java
+/workspaces/monitoreo_PRS1/src/main/java/pe/edu/vallegrande/monitoreo/model/Persona.java
+/workspaces/monitoreo_PRS1/src/main/java/pe/edu/vallegrande/monitoreo/repository/EducationRepository.java
+/workspaces/monitoreo_PRS1/src/main/java/pe/edu/vallegrande/monitoreo/repository/HealthRepository.java
+/workspaces/monitoreo_PRS1/src/main/java/pe/edu/vallegrande/monitoreo/repository/PersonaRepository.java
+/workspaces/monitoreo_PRS1/src/main/java/pe/edu/vallegrande/monitoreo/rest/PersonaRest.java
+/workspaces/monitoreo_PRS1/src/main/java/pe/edu/vallegrande/monitoreo/service/PersonaService.java
+/workspaces/monitoreo_PRS1/src/main/java/pe/edu/vallegrande/monitoreo/service/impl/PersonaServiceImpl.java

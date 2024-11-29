@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: monitoreo
+  r2dbc:
+    url: r2dbc:pool:postgresql://neondb_owner:E7ZoFl2PrvjX@ep-patient-glade-a500n7jv.us-east-2.aws.neon.tech/neondb?sslmode=require
+server:
+  port: 8085

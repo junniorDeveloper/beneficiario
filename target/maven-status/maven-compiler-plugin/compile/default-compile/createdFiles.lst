@@ -1,0 +1,15 @@
+pe/edu/vallegrande/monitoreo/dto/PersonaUpdateDTO.class
+pe/edu/vallegrande/monitoreo/repository/EducationRepository.class
+pe/edu/vallegrande/monitoreo/dto/PersonaWithDetailsDTO.class
+pe/edu/vallegrande/monitoreo/repository/HealthRepository.class
+pe/edu/vallegrande/monitoreo/model/Persona.class
+pe/edu/vallegrande/monitoreo/rest/PersonaRest.class
+pe/edu/vallegrande/monitoreo/config/SwaggerConfig.class
+pe/edu/vallegrande/monitoreo/repository/PersonaRepository.class
+pe/edu/vallegrande/monitoreo/model/Persona$PersonaBuilder.class
+pe/edu/vallegrande/monitoreo/model/Education.class
+pe/edu/vallegrande/monitoreo/service/impl/PersonaServiceImpl.class
+pe/edu/vallegrande/monitoreo/service/PersonaService.class
+pe/edu/vallegrande/monitoreo/MonitoreoApplication.class
+pe/edu/vallegrande/monitoreo/model/Health.class
+pe/edu/vallegrande/monitoreo/model/Education$EducationBuilder.class
