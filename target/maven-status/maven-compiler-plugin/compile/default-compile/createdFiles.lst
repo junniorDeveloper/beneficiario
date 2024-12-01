@@ -9,7 +9,10 @@ pe/edu/vallegrande/monitoreo/repository/PersonaRepository.class
 pe/edu/vallegrande/monitoreo/model/Persona$PersonaBuilder.class
 pe/edu/vallegrande/monitoreo/model/Education.class
 pe/edu/vallegrande/monitoreo/service/impl/PersonaServiceImpl.class
+pe/edu/vallegrande/monitoreo/dto/PersonaRequest.class
 pe/edu/vallegrande/monitoreo/service/PersonaService.class
 pe/edu/vallegrande/monitoreo/MonitoreoApplication.class
 pe/edu/vallegrande/monitoreo/model/Health.class
+pe/edu/vallegrande/monitoreo/dto/PersonaRequest$EducationRequest.class
 pe/edu/vallegrande/monitoreo/model/Education$EducationBuilder.class
+pe/edu/vallegrande/monitoreo/dto/PersonaRequest$HealthRequest.class

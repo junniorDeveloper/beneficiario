@@ -29,7 +29,7 @@ public class Education {
     private String fullNotebook;
 
     @Column("educational_assistance")
-    private String educationalAssitence;
+    private String educationalAssistance;
 
     @Column("academic_tutorials")
     private String academicTutorias;

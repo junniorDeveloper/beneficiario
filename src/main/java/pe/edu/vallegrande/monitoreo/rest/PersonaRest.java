@@ -2,7 +2,6 @@ package pe.edu.vallegrande.monitoreo.rest;
 
 import lombok.extern.slf4j.Slf4j;
 import pe.edu.vallegrande.monitoreo.dto.PersonaRequest;
-import pe.edu.vallegrande.monitoreo.dto.PersonaUpdateDTO;
 import pe.edu.vallegrande.monitoreo.dto.PersonaWithDetailsDTO;
 import pe.edu.vallegrande.monitoreo.model.Persona;
 import pe.edu.vallegrande.monitoreo.service.impl.PersonaServiceImpl;
@@ -45,6 +44,9 @@ public class PersonaRest {
 
 
 
+
+
+
     @GetMapping("/personas/ListaActivos")
     public Flux<Persona> getActivePersons() {
         return personaService.getActivePersons();
@@ -60,7 +62,7 @@ public class PersonaRest {
     public Mono<Persona> registerPersona(@RequestBody PersonaRequest personaRequest) {
         return personaService.registerPersona(personaRequest);
     }
-    @PutMapping("/edit/{idPerson}")
+    @PutMapping("/editar/{idPerson}")
     @ResponseStatus(HttpStatus.OK) 
     public Mono<Persona> updatePersona(@PathVariable Integer idPerson, @RequestBody PersonaRequest personaRequest) {
         return personaService.updatePersona(idPerson, personaRequest);
@@ -119,13 +121,7 @@ public class PersonaRest {
                 });
     }
 
-    @PutMapping("/{id}")
-    public Mono<ResponseEntity<Persona>> updatePersona(@PathVariable("id") Integer id,
-            @RequestBody PersonaUpdateDTO updateDTO) {
-        return personaService.updatePersona(id, updateDTO)
-                .map(persona -> ResponseEntity.ok(persona))
-                .defaultIfEmpty(ResponseEntity.notFound().build());
-    }
+ 
 
     
 }

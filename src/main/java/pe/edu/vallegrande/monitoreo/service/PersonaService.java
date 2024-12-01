@@ -1,7 +1,6 @@
 package pe.edu.vallegrande.monitoreo.service;
 
 import pe.edu.vallegrande.monitoreo.dto.PersonaRequest;
-import pe.edu.vallegrande.monitoreo.dto.PersonaUpdateDTO;
 import pe.edu.vallegrande.monitoreo.dto.PersonaWithDetailsDTO;
 import pe.edu.vallegrande.monitoreo.model.Persona;
 import reactor.core.publisher.Flux;
@@ -25,7 +24,6 @@ public interface PersonaService {
 
     Flux<Persona> getInactivePersons();
     Flux<Persona> getActivePersons();
-    Mono<Persona> updatePersona(Integer id, PersonaUpdateDTO updateDTO);
     Mono<Persona> registerPersona(PersonaRequest personaRequest);
     Mono<Persona> updatePersona(Integer idPerson, PersonaRequest personaRequest);
     Mono<PersonaWithDetailsDTO> getPersonaWithDetailsById(Integer idPerson);

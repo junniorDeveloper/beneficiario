@@ -1,8 +1,10 @@
 package pe.edu.vallegrande.monitoreo.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import pe.edu.vallegrande.monitoreo.config.EntityNotFoundException;
 import pe.edu.vallegrande.monitoreo.dto.PersonaRequest;
-import pe.edu.vallegrande.monitoreo.dto.PersonaUpdateDTO;
+import pe.edu.vallegrande.monitoreo.dto.PersonaRequest.EducationRequest;
+import pe.edu.vallegrande.monitoreo.dto.PersonaRequest.HealthRequest;
 import pe.edu.vallegrande.monitoreo.dto.PersonaWithDetailsDTO;
 import pe.edu.vallegrande.monitoreo.model.Education;
 import pe.edu.vallegrande.monitoreo.model.Health;
@@ -30,16 +32,14 @@ public class PersonaServiceImpl implements PersonaService {
     @Autowired
     private HealthRepository healthRepository;
 
-
     @Autowired
     public PersonaServiceImpl(PersonaRepository personaRepository,
-                              EducationRepository educationRepository,
-                              HealthRepository healthRepository) {
+            EducationRepository educationRepository,
+            HealthRepository healthRepository) {
         this.personaRepository = personaRepository;
         this.educationRepository = educationRepository;
         this.healthRepository = healthRepository;
     }
-
 
     @Override
     public Mono<Persona> findStudentById(Integer id) {
@@ -48,7 +48,6 @@ public class PersonaServiceImpl implements PersonaService {
                 .doOnSuccess(persona -> log.info("Found student: {}", persona))
                 .doOnError(error -> log.error("Error finding student by ID: {}", id, error));
     }
-
 
     @Override
     public Mono<Persona> findPersonaInactive(Integer id) {
@@ -59,7 +58,9 @@ public class PersonaServiceImpl implements PersonaService {
                         persona.setState("I");
                         return personaRepository.save(persona)
                                 .doOnSuccess(updatedPersona -> log.info("Persona inactivado: {}", updatedPersona))
-                                .doOnError(error -> log.error("Error al actualizar el estado de la persona a inactivo para el ID: {}", id, error));
+                                .doOnError(error -> log.error(
+                                        "Error al actualizar el estado de la persona a inactivo para el ID: {}", id,
+                                        error));
                     } else {
                         log.warn("Persona no encontrado con el ID: {}", id);
                         return Mono.empty();
@@ -76,14 +77,15 @@ public class PersonaServiceImpl implements PersonaService {
                         persona.setState("A");
                         return personaRepository.save(persona)
                                 .doOnSuccess(updatedPersona -> log.info("Persona activado: {}", updatedPersona))
-                                .doOnError(error -> log.error("Error al actualizar el estado de la persona a activo para el ID: {}", id, error));
+                                .doOnError(error -> log.error(
+                                        "Error al actualizar el estado de la persona a activo para el ID: {}", id,
+                                        error));
                     } else {
                         log.warn("Persona no encontrado con el ID: {}", id);
                         return Mono.empty();
                     }
                 });
     }
-
 
     @Override
     public Flux<Persona> findAllStudents() {
@@ -112,26 +114,6 @@ public class PersonaServiceImpl implements PersonaService {
     }
 
     @Override
-    public Mono<Persona> updatePersona(Integer id, PersonaUpdateDTO updateDTO) {
-        return personaRepository.findById(id)
-                .flatMap(persona -> {
-                    persona.setName(updateDTO.getPersona().getName());
-                    persona.setSurname(updateDTO.getPersona().getSurname());
-                    persona.setTypeDocument(updateDTO.getPersona().getTypeDocument());
-                    persona.setDocumentNumber(updateDTO.getPersona().getDocumentNumber());
-                    persona.setTypeKinship(updateDTO.getPersona().getTypeKinship());
-                    persona.setFamiliaId(updateDTO.getPersona().getFamiliaId());
-
-                    persona.setEducationIdEducation(updateDTO.getEducation().getIdEducation());
-                    persona.setHealthIdHealth(updateDTO.getHealth().getIdHealth());
-
-                    return personaRepository.save(persona);
-                })
-                .switchIfEmpty(Mono.empty()); 
-    }
-
-    
-    @Override
     public Flux<PersonaWithDetailsDTO> getAllPersonasWithDetails() {
         return personaRepository.findAll()
                 .flatMap(persona -> {
@@ -155,12 +137,6 @@ public class PersonaServiceImpl implements PersonaService {
                 });
     }
 
-
-
-
-
-
-
     // Necesario para la parte de registrar
 
     @Override
@@ -181,7 +157,7 @@ public class PersonaServiceImpl implements PersonaService {
                     health.setVaccineSchemes(personaRequest.getHealth().getVaccineSchemes());
                     health.setVph(personaRequest.getHealth().getVph());
                     health.setInfluenza(personaRequest.getHealth().getInfluenza());
-                    health.setDeworning(personaRequest.getHealth().getDeworming());
+                    health.setDeworming(personaRequest.getHealth().getDeworming());
                     health.setHemoglobin(personaRequest.getHealth().getHemoglobin());
 
                     return healthRepository.save(health)
@@ -202,69 +178,69 @@ public class PersonaServiceImpl implements PersonaService {
                 });
     }
 
-
     @Override
     public Mono<Persona> updatePersona(Integer idPerson, PersonaRequest personaRequest) {
         return personaRepository.findById(idPerson)
-            .flatMap(existingPersona -> {
+                .flatMap(existingPersona -> {
+                    existingPersona.setName(personaRequest.getName());
+                    existingPersona.setSurname(personaRequest.getSurname());
+                    existingPersona.setTypeDocument(personaRequest.getTypeDocument());
+                    existingPersona.setDocumentNumber(personaRequest.getDocumentNumber());
+                    existingPersona.setTypeKinship(personaRequest.getTypeKinship());
+                    existingPersona.setEducationIdEducation(personaRequest.getEducationIdEducation());
+                    existingPersona.setHealthIdHealth(personaRequest.getHealthIdHealth());
+                    existingPersona.setFamiliaId(personaRequest.getFamiliaId());
+                    existingPersona.setState("A");
 
-                existingPersona.setName(personaRequest.getName());
-                existingPersona.setSurname(personaRequest.getSurname());
-                existingPersona.setTypeDocument(personaRequest.getTypeDocument());
-                existingPersona.setDocumentNumber(personaRequest.getDocumentNumber());
-                existingPersona.setTypeKinship(personaRequest.getTypeKinship());
-                existingPersona.setEducationIdEducation(personaRequest.getEducationIdEducation());
-                existingPersona.setHealthIdHealth(personaRequest.getHealthIdHealth());
-                existingPersona.setFamiliaId(personaRequest.getFamiliaId());
-                existingPersona.setState("A");
-
-                if (personaRequest.getEducation() != null) {
-                    return educationRepository.findById(personaRequest.getEducation().getIdEducation())
-                        .flatMap(existingEducation -> {
-                            existingEducation.setGradeBook(personaRequest.getEducation().getGradeBook());
-                            existingEducation.setGradeAverage(personaRequest.getEducation().getGradeAverage());
-                            existingEducation.setFullNotebook(personaRequest.getEducation().getFullNotebook());
-                            existingEducation.setEducationalAssitence(personaRequest.getEducation().getEducationalAssistance());
-                            existingEducation.setAcademicTutorias(personaRequest.getEducation().getAcademicTutorias());
-                            existingEducation.setDegreeStudy(personaRequest.getEducation().getDegreeStudy());
-
-                            return educationRepository.save(existingEducation)
-                                .flatMap(updatedEducation -> {
-                                    existingPersona.setEducationIdEducation(updatedEducation.getIdEducation());
-                                    return personaRepository.save(existingPersona);
-                                });
-                        })
-                        .switchIfEmpty(Mono.just(existingPersona));  
-                }
-
-                if (personaRequest.getHealth() != null) {
-                    return healthRepository.findById(personaRequest.getHealth().getIdHealth())
-                        .flatMap(existingHealth -> {
-                            existingHealth.setVaccineSchemes(personaRequest.getHealth().getVaccineSchemes());
-                            existingHealth.setVph(personaRequest.getHealth().getVph());
-                            existingHealth.setInfluenza(personaRequest.getHealth().getInfluenza());
-                            existingHealth.setDeworning(personaRequest.getHealth().getDeworming());
-                            existingHealth.setHemoglobin(personaRequest.getHealth().getHemoglobin());
-
-                            return healthRepository.save(existingHealth)
-                                .flatMap(updatedHealth -> {
-                                    existingPersona.setHealthIdHealth(updatedHealth.getIdHealth());
-                                    return personaRepository.save(existingPersona);
-                                });
-                        })
-                        .switchIfEmpty(Mono.just(existingPersona)); 
-                }
-
-                return personaRepository.save(existingPersona);
-            })
-            .switchIfEmpty(Mono.error(new Exception("Persona no encontrada"))); 
+                    return updateEducation(personaRequest.getEducation(), existingPersona)
+                            .flatMap(updatedPersona -> updateHealth(personaRequest.getHealth(), updatedPersona))
+                            .flatMap(personaRepository::save);
+                })
+                .switchIfEmpty(Mono.error(new EntityNotFoundException("Persona no encontrada")));
     }
 
+    private Mono<Persona> updateEducation(EducationRequest educationRequest, Persona persona) {
+        if (educationRequest != null) {
+            return educationRepository.findById(educationRequest.getIdEducation())
+                    .flatMap(existingEducation -> {
+                        existingEducation.setGradeBook(educationRequest.getGradeBook());
+                        existingEducation.setGradeAverage(educationRequest.getGradeAverage());
+                        existingEducation.setFullNotebook(educationRequest.getFullNotebook());
+                        existingEducation.setEducationalAssistance(educationRequest.getEducationalAssistance());
+                        existingEducation.setAcademicTutorias(educationRequest.getAcademicTutorias());
+                        existingEducation.setDegreeStudy(educationRequest.getDegreeStudy());
 
+                        return educationRepository.save(existingEducation)
+                                .flatMap(updatedEducation -> {
+                                    persona.setEducationIdEducation(updatedEducation.getIdEducation());
+                                    return Mono.just(persona);
+                                });
+                    })
+                    .switchIfEmpty(Mono.just(persona));
+        }
+        return Mono.just(persona);
+    }
 
-    
+    private Mono<Persona> updateHealth(HealthRequest healthRequest, Persona persona) {
+        if (healthRequest != null) {
+            return healthRepository.findById(healthRequest.getIdHealth())
+                    .flatMap(existingHealth -> {
+                        existingHealth.setVaccineSchemes(healthRequest.getVaccineSchemes());
+                        existingHealth.setVph(healthRequest.getVph());
+                        existingHealth.setInfluenza(healthRequest.getInfluenza());
+                        existingHealth.setDeworming(healthRequest.getDeworming());
+                        existingHealth.setHemoglobin(healthRequest.getHemoglobin());
 
-
+                        return healthRepository.save(existingHealth)
+                                .flatMap(updatedHealth -> {
+                                    persona.setHealthIdHealth(updatedHealth.getIdHealth());
+                                    return Mono.just(persona);
+                                });
+                    })
+                    .switchIfEmpty(Mono.just(persona));
+        }
+        return Mono.just(persona);
+    }
 
     @Override
     public Mono<PersonaWithDetailsDTO> getPersonaWithDetailsById(Integer idPerson) {
@@ -288,6 +264,6 @@ public class PersonaServiceImpl implements PersonaService {
                         return dto;
                     });
                 });
-    }   
+    }
 
 }

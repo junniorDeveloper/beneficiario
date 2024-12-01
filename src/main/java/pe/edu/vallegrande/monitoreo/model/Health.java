@@ -17,6 +17,6 @@ public class Health {
     private String vph;
     private String influenza;
     @Column("deworming")
-    private String deworning;
+    private String deworming;
     private String hemoglobin;
 }
