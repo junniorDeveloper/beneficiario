@@ -14,7 +14,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI apiInfo() {
         return new OpenAPI()
-                .servers(Collections.singletonList(new Server().url("http://localhost:8085/")))
+                .servers(Collections.singletonList(new Server().url("https://friendly-space-orbit-97j76xv54xwxhx54w-8085.app.github.dev/")))
                 .info(new Info()
                         .title("MONITOREP API")
                         .description("AS222S5_be PRS1")
