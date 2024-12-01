@@ -1,6 +1,7 @@
 package pe.edu.vallegrande.monitoreo.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import pe.edu.vallegrande.monitoreo.dto.PersonaRequest;
 import pe.edu.vallegrande.monitoreo.dto.PersonaUpdateDTO;
 import pe.edu.vallegrande.monitoreo.dto.PersonaWithDetailsDTO;
 import pe.edu.vallegrande.monitoreo.model.Education;
@@ -187,4 +188,54 @@ public class PersonaServiceImpl implements PersonaService {
                     });
                 });
     }
+
+
+
+
+
+
+
+    // Necesario para la parte de registrar
+    
+    @Override
+    public Mono<Persona> registerPersona(PersonaRequest personaRequest) {
+        Education education = new Education(
+                personaRequest.getEducation().getIdEducation(),
+                personaRequest.getEducation().getGradeBook(),
+                personaRequest.getEducation().getGradeAverage(),
+                personaRequest.getEducation().getFullNotebook(),
+                personaRequest.getEducation().getEducationalAssistance(),
+                personaRequest.getEducation().getAcademicTutorias(),
+                personaRequest.getEducation().getDegreeStudy());
+
+        return educationRepository.save(education)
+                .flatMap(savedEducation -> {
+                    Health health = new Health();
+                    health.setIdHealth(personaRequest.getHealth().getIdHealth());
+                    health.setVaccineSchemes(personaRequest.getHealth().getVaccineSchemes());
+                    health.setVph(personaRequest.getHealth().getVph());
+                    health.setInfluenza(personaRequest.getHealth().getInfluenza());
+                    health.setDeworning(personaRequest.getHealth().getDeworming());
+                    health.setHemoglobin(personaRequest.getHealth().getHemoglobin());
+
+                    return healthRepository.save(health)
+                            .flatMap(savedHealth -> {
+                                Persona persona = new Persona();
+                                persona.setName(personaRequest.getName());
+                                persona.setSurname(personaRequest.getSurname());
+                                persona.setTypeDocument(personaRequest.getTypeDocument());
+                                persona.setDocumentNumber(personaRequest.getDocumentNumber());
+                                persona.setTypeKinship(personaRequest.getTypeKinship());
+                                persona.setFamiliaId(personaRequest.getFamiliaId());
+                                persona.setState("A");
+                                persona.setEducationIdEducation(savedEducation.getIdEducation());
+                                persona.setHealthIdHealth(savedHealth.getIdHealth());
+
+                                return personaRepository.save(persona);
+                            });
+                });
+    }
+
+
+
 }

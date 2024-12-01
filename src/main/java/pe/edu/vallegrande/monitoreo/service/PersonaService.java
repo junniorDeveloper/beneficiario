@@ -1,5 +1,6 @@
 package pe.edu.vallegrande.monitoreo.service;
 
+import pe.edu.vallegrande.monitoreo.dto.PersonaRequest;
 import pe.edu.vallegrande.monitoreo.dto.PersonaUpdateDTO;
 import pe.edu.vallegrande.monitoreo.dto.PersonaWithDetailsDTO;
 import pe.edu.vallegrande.monitoreo.model.Persona;
@@ -25,8 +26,13 @@ public interface PersonaService {
 
     Mono<Void> deleteById(Integer id);
 
+
+
+    
     Mono<Persona> updatePersona(Integer id, PersonaUpdateDTO updateDTO);
     Mono<Persona> registerPersona(PersonaWithDetailsDTO personaWithDetailsDTO);
+    Mono<Persona> registerPersona(PersonaRequest personaRequest);
+
 
 
 

@@ -1,6 +1,7 @@
 package pe.edu.vallegrande.monitoreo.rest;
 
 import lombok.extern.slf4j.Slf4j;
+import pe.edu.vallegrande.monitoreo.dto.PersonaRequest;
 import pe.edu.vallegrande.monitoreo.dto.PersonaUpdateDTO;
 import pe.edu.vallegrande.monitoreo.dto.PersonaWithDetailsDTO;
 import pe.edu.vallegrande.monitoreo.model.Persona;
@@ -33,12 +34,11 @@ public class PersonaRest {
     @PostMapping("/registrar_varios")
     public Flux<Persona> saveAllStudents(@RequestBody Flux<PersonaWithDetailsDTO> personaWithDetailsDTO) {
         log.info("Request to save batch of students with education and health");
-        
+
         return personaService.saveAllStudents(personaWithDetailsDTO)
                 .doOnComplete(() -> log.info("Successfully saved all students with education and health"))
                 .doOnError(error -> log.error("Error saving batch of students with education and health", error));
     }
-
 
     @GetMapping("/listadoDetalle")
     public Flux<PersonaWithDetailsDTO> getAllPersonasWithDetails() {
@@ -63,7 +63,7 @@ public class PersonaRest {
 
 
 
-
+    
     @GetMapping("/personas/ListaActivos")
     public Flux<Persona> getActivePersons() {
         return personaService.getActivePersons();
@@ -74,6 +74,17 @@ public class PersonaRest {
         return personaService.getInactivePersons();
     }
 
+    @PostMapping("/registerNuevo")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<Persona> registerPersona(@RequestBody PersonaRequest personaRequest) {
+        return personaService.registerPersona(personaRequest);
+    }
+
+
+
+
+
+
     @DeleteMapping("/{id}/eliminadoFisico")
     public Mono<String> deleteStudentById(@PathVariable Integer id) {
         log.info("Request to delete student by ID: {}", id);
@@ -83,7 +94,6 @@ public class PersonaRest {
                         .doOnSuccess(msg -> log.info(msg))
                         .doOnError(error -> log.error("Error deleting student by ID: {}", id, error)));
     }
-
 
     @PutMapping("/{id}/inactivar")
     public Mono<ResponseEntity<String>> inactivateStudent(@PathVariable Integer id) {
@@ -109,17 +119,13 @@ public class PersonaRest {
                 });
     }
 
-
-  
-
-   @PutMapping("/{id}")
+    @PutMapping("/{id}")
     public Mono<ResponseEntity<Persona>> updatePersona(@PathVariable("id") Integer id,
-                                                       @RequestBody PersonaUpdateDTO updateDTO) {
+            @RequestBody PersonaUpdateDTO updateDTO) {
         return personaService.updatePersona(id, updateDTO)
-                .map(persona -> ResponseEntity.ok(persona)) 
-                .defaultIfEmpty(ResponseEntity.notFound().build()); 
+                .map(persona -> ResponseEntity.ok(persona))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
-    
 
     @PostMapping("/registrar")
     public Mono<ResponseEntity<String>> registerPersona(@RequestBody PersonaWithDetailsDTO personaWithDetailsDTO) {

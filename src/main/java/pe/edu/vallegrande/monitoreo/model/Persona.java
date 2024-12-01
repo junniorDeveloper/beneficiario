@@ -15,6 +15,10 @@ import lombok.Data;
 @Table(name = "person")
 public class Persona {
 
+    public Persona() {
+        //TODO Auto-generated constructor stub
+    }
+
     @Id
     @Column("id_person")
     private Integer idPerson;
