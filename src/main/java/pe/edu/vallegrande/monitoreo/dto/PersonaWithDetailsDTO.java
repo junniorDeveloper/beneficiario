@@ -7,17 +7,16 @@ import pe.edu.vallegrande.monitoreo.model.Health;
 @Data
 public class PersonaWithDetailsDTO {
 
-    private Integer idPerson;  // ID de la persona
-    private String name;       // Nombre
-    private String surname;    // Apellido
-    private String typeDocument;  // Tipo de documento
-    private String documentNumber; // Número de documento
-    private String typeKinship; // Tipo de parentesco (relación con la persona)
-    private Integer familiaId; // ID de la familia, si es necesario para la lógica
-    private String state; // Estado (activo, inactivo, etc.)
+    private Integer idPerson;  
+    private String name;  
+    private String surname;   
+    private String typeDocument;
+    private String documentNumber; 
+    private String typeKinship;
+    private Integer familiaId; 
+    private String state; 
     
-    // Relaciones
-    private Education education;  // Entidad Education relacionada
-    private Health health;        // Entidad Health relacionada
+    private Education education;  
+    private Health health;      
 
 }

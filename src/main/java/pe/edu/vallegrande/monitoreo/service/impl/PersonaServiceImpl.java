@@ -270,11 +270,9 @@ public class PersonaServiceImpl implements PersonaService {
     public Mono<PersonaWithDetailsDTO> getPersonaWithDetailsById(Integer idPerson) {
         return personaRepository.findById(idPerson)
                 .flatMap(persona -> {
-                    // Consultamos la información de Education y Health
                     Mono<Education> educationMono = educationRepository.findById(persona.getEducationIdEducation());
                     Mono<Health> healthMono = healthRepository.findById(persona.getHealthIdHealth());
 
-                    // Combinamos ambos Mono (Education y Health) y creamos el DTO
                     return Mono.zip(educationMono, healthMono, (education, health) -> {
                         PersonaWithDetailsDTO dto = new PersonaWithDetailsDTO();
                         dto.setIdPerson(persona.getIdPerson());
