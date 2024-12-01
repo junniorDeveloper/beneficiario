@@ -122,11 +122,13 @@ public class PersonaServiceImpl implements PersonaService {
     }
 
     @Override
-    public Mono<Void> deleteAll() {
-        log.info("Request to delete all students");
-        return personaRepository.deleteAll()
-                .doOnSuccess(unused -> log.info("Successfully deleted all students"))
-                .doOnError(error -> log.error("Error deleting all students", error));
+    public Flux<Persona> getActivePersons() {
+        return personaRepository.findByState("A");
+    }
+
+    @Override
+    public Flux<Persona> getInactivePersons() {
+        return personaRepository.findByState("I");
     }
 
     @Override

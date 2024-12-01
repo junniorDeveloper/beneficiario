@@ -20,12 +20,15 @@ public interface PersonaService {
 
     Flux<Persona> findAllStudents();
 
-    Mono<Void> deleteAll();
+    Flux<Persona> getInactivePersons();
+    Flux<Persona> getActivePersons();
 
     Mono<Void> deleteById(Integer id);
 
     Mono<Persona> updatePersona(Integer id, PersonaUpdateDTO updateDTO);
     Mono<Persona> registerPersona(PersonaWithDetailsDTO personaWithDetailsDTO);
+
+
 
     Flux<PersonaWithDetailsDTO> getAllPersonasWithDetails();
 

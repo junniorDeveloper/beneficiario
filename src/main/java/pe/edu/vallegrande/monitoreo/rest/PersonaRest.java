@@ -61,6 +61,19 @@ public class PersonaRest {
                 .doOnError(error -> log.error("Error finding all students", error));
     }
 
+
+
+
+    @GetMapping("/personas/ListaActivos")
+    public Flux<Persona> getActivePersons() {
+        return personaService.getActivePersons();
+    }
+
+    @GetMapping("/personas/ListaInactivos")
+    public Flux<Persona> getInactivePersons() {
+        return personaService.getInactivePersons();
+    }
+
     @DeleteMapping("/{id}/eliminadoFisico")
     public Mono<String> deleteStudentById(@PathVariable Integer id) {
         log.info("Request to delete student by ID: {}", id);
@@ -97,13 +110,7 @@ public class PersonaRest {
     }
 
 
-    @DeleteMapping()
-    public Mono<Void> deleteAllStudents() {
-        log.info("Request to delete all students");
-        return personaService.deleteAll()
-                .doOnSuccess(unused -> log.info("Successfully deleted all students"))
-                .doOnError(error -> log.error("Error deleting all students", error));
-    }
+  
 
    @PutMapping("/{id}")
     public Mono<ResponseEntity<Persona>> updatePersona(@PathVariable("id") Integer id,
