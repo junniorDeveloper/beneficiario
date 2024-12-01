@@ -23,27 +23,8 @@ public class PersonaRest {
     @Autowired
     private PersonaServiceImpl personaService;
 
-    @PostMapping
-    public Mono<Persona> saveStudent(@RequestBody Persona persona) {
-        log.info("Request to save student: {}", persona);
-        return personaService.saveSingleStudent(persona)
-                .doOnSuccess(savedPersona -> log.info("Exito persona registrada: {}", savedPersona))
-                .doOnError(error -> log.error("Error al guardar persona: {}", persona, error));
-    }
 
-    @PostMapping("/registrar_varios")
-    public Flux<Persona> saveAllStudents(@RequestBody Flux<PersonaWithDetailsDTO> personaWithDetailsDTO) {
-        log.info("Request to save batch of students with education and health");
-
-        return personaService.saveAllStudents(personaWithDetailsDTO)
-                .doOnComplete(() -> log.info("Successfully saved all students with education and health"))
-                .doOnError(error -> log.error("Error saving batch of students with education and health", error));
-    }
-
-    @GetMapping("/listadoDetalle")
-    public Flux<PersonaWithDetailsDTO> getAllPersonasWithDetails() {
-        return personaService.getAllPersonasWithDetails();
-    }
+    
 
     @GetMapping("/{id}")
     public Mono<Persona> findStudentById(@PathVariable Integer id) {
@@ -63,7 +44,7 @@ public class PersonaRest {
 
 
 
-    
+
     @GetMapping("/personas/ListaActivos")
     public Flux<Persona> getActivePersons() {
         return personaService.getActivePersons();
@@ -74,11 +55,30 @@ public class PersonaRest {
         return personaService.getInactivePersons();
     }
 
-    @PostMapping("/registerNuevo")
+    @PostMapping("/registrar")
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<Persona> registerPersona(@RequestBody PersonaRequest personaRequest) {
         return personaService.registerPersona(personaRequest);
     }
+    @PutMapping("/edit/{idPerson}")
+    @ResponseStatus(HttpStatus.OK) 
+    public Mono<Persona> updatePersona(@PathVariable Integer idPerson, @RequestBody PersonaRequest personaRequest) {
+        return personaService.updatePersona(idPerson, personaRequest);
+    }
+
+    @GetMapping("/detalles")
+    public Flux<PersonaWithDetailsDTO> getAllPersonasWithDetails() {
+        return personaService.getAllPersonasWithDetails();
+    }
+
+    @GetMapping("/detalles/{idPerson}")
+    public Mono<ResponseEntity<PersonaWithDetailsDTO>> getPersonaWithDetailsById(@PathVariable Integer idPerson) {
+        return personaService.getPersonaWithDetailsById(idPerson)
+                .map(personaWithDetails -> ResponseEntity.ok(personaWithDetails))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+
 
 
 
@@ -127,11 +127,5 @@ public class PersonaRest {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/registrar")
-    public Mono<ResponseEntity<String>> registerPersona(@RequestBody PersonaWithDetailsDTO personaWithDetailsDTO) {
-        return personaService.registerPersona(personaWithDetailsDTO)
-                .map(persona -> ResponseEntity.ok("Persona registrada con éxito."))
-                .onErrorResume(e -> Mono
-                        .just(ResponseEntity.badRequest().body("Error al registrar la persona: " + e.getMessage())));
-    }
+    
 }

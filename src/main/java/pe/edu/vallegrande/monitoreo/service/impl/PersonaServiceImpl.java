@@ -30,37 +30,16 @@ public class PersonaServiceImpl implements PersonaService {
     @Autowired
     private HealthRepository healthRepository;
 
-    @Override
-    public Flux<Persona> saveAllStudents(Flux<PersonaWithDetailsDTO> personaWithDetailsDTO) {
-        log.info("Request to save batch of students with education and health");
 
-        return personaWithDetailsDTO.flatMap(dto -> {
-            Persona persona = dto.getPersona();
-            Education education = dto.getEducation();
-            Health health = dto.getHealth();
-
-          
-            return healthRepository.save(health)
-                    .flatMap(savedHealth -> {
-                        persona.setHealthIdHealth(savedHealth.getIdHealth()); 
-                        return educationRepository.save(education)
-                                .flatMap(savedEducation -> {
-                                    persona.setEducationIdEducation(savedEducation.getIdEducation()); 
-                                    return personaRepository.save(persona);
-                                });
-                    });
-        })
-                .doOnComplete(() -> log.info("Successfully saved all students with education and health"))
-                .doOnError(error -> log.error("Error saving batch of students with education and health", error));
+    @Autowired
+    public PersonaServiceImpl(PersonaRepository personaRepository,
+                              EducationRepository educationRepository,
+                              HealthRepository healthRepository) {
+        this.personaRepository = personaRepository;
+        this.educationRepository = educationRepository;
+        this.healthRepository = healthRepository;
     }
 
-    @Override
-    public Mono<Persona> saveSingleStudent(Persona persona) {
-        log.info("Request to save student: {}", persona);
-        return personaRepository.save(persona)
-                .doOnSuccess(savedStudent -> log.info("Successfully saved persona: {}", savedStudent))
-                .doOnError(error -> log.error("Error saving student: {}", persona, error));
-    }
 
     @Override
     public Mono<Persona> findStudentById(Integer id) {
@@ -151,27 +130,7 @@ public class PersonaServiceImpl implements PersonaService {
                 .switchIfEmpty(Mono.empty()); 
     }
 
-    @Override
-    public Mono<Persona> registerPersona(PersonaWithDetailsDTO personaWithDetailsDTO) {
-        Persona persona = personaWithDetailsDTO.getPersona();
-        Education education = personaWithDetailsDTO.getEducation();
-        Health health = personaWithDetailsDTO.getHealth();
     
-        persona.setState("A"); 
-    
-        return healthRepository.save(health)
-                .flatMap(savedHealth -> {
-                    persona.setHealthIdHealth(savedHealth.getIdHealth());
-    
-                    return educationRepository.save(education)
-                            .flatMap(savedEducation -> {
-                                persona.setEducationIdEducation(savedEducation.getIdEducation());
-                                return personaRepository.save(persona);
-                            });
-                });
-    }
-
-
     @Override
     public Flux<PersonaWithDetailsDTO> getAllPersonasWithDetails() {
         return personaRepository.findAll()
@@ -181,7 +140,14 @@ public class PersonaServiceImpl implements PersonaService {
 
                     return Mono.zip(educationMono, healthMono, (education, health) -> {
                         PersonaWithDetailsDTO dto = new PersonaWithDetailsDTO();
-                        dto.setPersona(persona);
+                        dto.setIdPerson(persona.getIdPerson());
+                        dto.setName(persona.getName());
+                        dto.setSurname(persona.getSurname());
+                        dto.setTypeDocument(persona.getTypeDocument());
+                        dto.setDocumentNumber(persona.getDocumentNumber());
+                        dto.setTypeKinship(persona.getTypeKinship());
+                        dto.setFamiliaId(persona.getFamiliaId());
+                        dto.setState(persona.getState());
                         dto.setEducation(education);
                         dto.setHealth(health);
                         return dto;
@@ -196,7 +162,7 @@ public class PersonaServiceImpl implements PersonaService {
 
 
     // Necesario para la parte de registrar
-    
+
     @Override
     public Mono<Persona> registerPersona(PersonaRequest personaRequest) {
         Education education = new Education(
@@ -237,5 +203,93 @@ public class PersonaServiceImpl implements PersonaService {
     }
 
 
+    @Override
+    public Mono<Persona> updatePersona(Integer idPerson, PersonaRequest personaRequest) {
+        return personaRepository.findById(idPerson)
+            .flatMap(existingPersona -> {
+
+                existingPersona.setName(personaRequest.getName());
+                existingPersona.setSurname(personaRequest.getSurname());
+                existingPersona.setTypeDocument(personaRequest.getTypeDocument());
+                existingPersona.setDocumentNumber(personaRequest.getDocumentNumber());
+                existingPersona.setTypeKinship(personaRequest.getTypeKinship());
+                existingPersona.setEducationIdEducation(personaRequest.getEducationIdEducation());
+                existingPersona.setHealthIdHealth(personaRequest.getHealthIdHealth());
+                existingPersona.setFamiliaId(personaRequest.getFamiliaId());
+                existingPersona.setState("A");
+
+                if (personaRequest.getEducation() != null) {
+                    return educationRepository.findById(personaRequest.getEducation().getIdEducation())
+                        .flatMap(existingEducation -> {
+                            existingEducation.setGradeBook(personaRequest.getEducation().getGradeBook());
+                            existingEducation.setGradeAverage(personaRequest.getEducation().getGradeAverage());
+                            existingEducation.setFullNotebook(personaRequest.getEducation().getFullNotebook());
+                            existingEducation.setEducationalAssitence(personaRequest.getEducation().getEducationalAssistance());
+                            existingEducation.setAcademicTutorias(personaRequest.getEducation().getAcademicTutorias());
+                            existingEducation.setDegreeStudy(personaRequest.getEducation().getDegreeStudy());
+
+                            return educationRepository.save(existingEducation)
+                                .flatMap(updatedEducation -> {
+                                    existingPersona.setEducationIdEducation(updatedEducation.getIdEducation());
+                                    return personaRepository.save(existingPersona);
+                                });
+                        })
+                        .switchIfEmpty(Mono.just(existingPersona));  
+                }
+
+                if (personaRequest.getHealth() != null) {
+                    return healthRepository.findById(personaRequest.getHealth().getIdHealth())
+                        .flatMap(existingHealth -> {
+                            existingHealth.setVaccineSchemes(personaRequest.getHealth().getVaccineSchemes());
+                            existingHealth.setVph(personaRequest.getHealth().getVph());
+                            existingHealth.setInfluenza(personaRequest.getHealth().getInfluenza());
+                            existingHealth.setDeworning(personaRequest.getHealth().getDeworming());
+                            existingHealth.setHemoglobin(personaRequest.getHealth().getHemoglobin());
+
+                            return healthRepository.save(existingHealth)
+                                .flatMap(updatedHealth -> {
+                                    existingPersona.setHealthIdHealth(updatedHealth.getIdHealth());
+                                    return personaRepository.save(existingPersona);
+                                });
+                        })
+                        .switchIfEmpty(Mono.just(existingPersona)); 
+                }
+
+                return personaRepository.save(existingPersona);
+            })
+            .switchIfEmpty(Mono.error(new Exception("Persona no encontrada"))); 
+    }
+
+
+
+    
+
+
+
+    @Override
+    public Mono<PersonaWithDetailsDTO> getPersonaWithDetailsById(Integer idPerson) {
+        return personaRepository.findById(idPerson)
+                .flatMap(persona -> {
+                    // Consultamos la información de Education y Health
+                    Mono<Education> educationMono = educationRepository.findById(persona.getEducationIdEducation());
+                    Mono<Health> healthMono = healthRepository.findById(persona.getHealthIdHealth());
+
+                    // Combinamos ambos Mono (Education y Health) y creamos el DTO
+                    return Mono.zip(educationMono, healthMono, (education, health) -> {
+                        PersonaWithDetailsDTO dto = new PersonaWithDetailsDTO();
+                        dto.setIdPerson(persona.getIdPerson());
+                        dto.setName(persona.getName());
+                        dto.setSurname(persona.getSurname());
+                        dto.setTypeDocument(persona.getTypeDocument());
+                        dto.setDocumentNumber(persona.getDocumentNumber());
+                        dto.setTypeKinship(persona.getTypeKinship());
+                        dto.setFamiliaId(persona.getFamiliaId());
+                        dto.setState(persona.getState());
+                        dto.setEducation(education);
+                        dto.setHealth(health);
+                        return dto;
+                    });
+                });
+    }   
 
 }

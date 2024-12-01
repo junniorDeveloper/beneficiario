@@ -9,9 +9,7 @@ import reactor.core.publisher.Mono;
 
 public interface PersonaService {
 
-    public Flux<Persona> saveAllStudents(Flux<PersonaWithDetailsDTO> personaWithDetailsDTO);
 
-    Mono<Persona> saveSingleStudent(Persona persona);
 
     Mono<Persona> findStudentById(Integer id);
 
@@ -21,19 +19,16 @@ public interface PersonaService {
 
     Flux<Persona> findAllStudents();
 
-    Flux<Persona> getInactivePersons();
-    Flux<Persona> getActivePersons();
-
+  
     Mono<Void> deleteById(Integer id);
 
 
-
-    
+    Flux<Persona> getInactivePersons();
+    Flux<Persona> getActivePersons();
     Mono<Persona> updatePersona(Integer id, PersonaUpdateDTO updateDTO);
-    Mono<Persona> registerPersona(PersonaWithDetailsDTO personaWithDetailsDTO);
     Mono<Persona> registerPersona(PersonaRequest personaRequest);
-
-
+    Mono<Persona> updatePersona(Integer idPerson, PersonaRequest personaRequest);
+    Mono<PersonaWithDetailsDTO> getPersonaWithDetailsById(Integer idPerson);
 
 
     Flux<PersonaWithDetailsDTO> getAllPersonasWithDetails();
