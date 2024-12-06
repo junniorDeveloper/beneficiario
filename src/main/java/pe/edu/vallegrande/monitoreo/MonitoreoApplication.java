@@ -12,3 +12,4 @@ public class MonitoreoApplication {
 		SpringApplication.run(MonitoreoApplication.class, args);
 	}
 }
+

@@ -1,4 +1,3 @@
-pe/edu/vallegrande/monitoreo/dto/PersonaUpdateDTO.class
 pe/edu/vallegrande/monitoreo/repository/EducationRepository.class
 pe/edu/vallegrande/monitoreo/dto/PersonaWithDetailsDTO.class
 pe/edu/vallegrande/monitoreo/repository/HealthRepository.class

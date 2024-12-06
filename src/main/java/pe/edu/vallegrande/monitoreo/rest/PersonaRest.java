@@ -72,6 +72,7 @@ public class PersonaRest {
     public Flux<PersonaWithDetailsDTO> getAllPersonasWithDetails() {
         return personaService.getAllPersonasWithDetails();
     }
+    
 
     @GetMapping("/detalles/{idPerson}")
     public Mono<ResponseEntity<PersonaWithDetailsDTO>> getPersonaWithDetailsById(@PathVariable Integer idPerson) {
@@ -122,6 +123,12 @@ public class PersonaRest {
     }
 
  
+    @PutMapping("/{id}")
+    public Mono<ResponseEntity<Persona>> updatePersona(@PathVariable("id") Integer id, @RequestBody Persona persona) {
+        return personaService.update(id, persona)
+                .map(updatedPersona -> new ResponseEntity<>(updatedPersona, HttpStatus.OK)) 
+                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
     
 }

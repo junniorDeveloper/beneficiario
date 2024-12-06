@@ -14,6 +14,7 @@ import pe.edu.vallegrande.monitoreo.repository.HealthRepository;
 import pe.edu.vallegrande.monitoreo.repository.PersonaRepository;
 import pe.edu.vallegrande.monitoreo.service.PersonaService;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -32,7 +33,6 @@ public class PersonaServiceImpl implements PersonaService {
     @Autowired
     private HealthRepository healthRepository;
 
-    @Autowired
     public PersonaServiceImpl(PersonaRepository personaRepository,
             EducationRepository educationRepository,
             HealthRepository healthRepository) {
@@ -265,5 +265,24 @@ public class PersonaServiceImpl implements PersonaService {
                     });
                 });
     }
+
+    @Override
+    public Mono<Persona> update(Integer id, Persona persona) {
+        return personaRepository.findById(id)
+                .flatMap(existingPersona -> {
+                    existingPersona.setName(persona.getName());
+                    existingPersona.setSurname(persona.getSurname());
+                    existingPersona.setTypeDocument(persona.getTypeDocument());
+                    existingPersona.setDocumentNumber(persona.getDocumentNumber());
+                    existingPersona.setTypeKinship(persona.getTypeKinship());
+                    existingPersona.setEducationIdEducation(persona.getEducationIdEducation());
+                    existingPersona.setHealthIdHealth(persona.getHealthIdHealth());
+                    existingPersona.setFamiliaId(persona.getFamiliaId());
+                    existingPersona.setState("A");
+                    return personaRepository.save(existingPersona);
+                });
+    }
+     
+
 
 }

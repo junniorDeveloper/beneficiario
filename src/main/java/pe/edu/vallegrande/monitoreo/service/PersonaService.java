@@ -28,7 +28,8 @@ public interface PersonaService {
     Mono<Persona> updatePersona(Integer idPerson, PersonaRequest personaRequest);
     Mono<PersonaWithDetailsDTO> getPersonaWithDetailsById(Integer idPerson);
 
-
+    
+    Mono<Persona> update(Integer id, Persona persona);
     Flux<PersonaWithDetailsDTO> getAllPersonasWithDetails();
 
 }
