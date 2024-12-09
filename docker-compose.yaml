@@ -2,10 +2,10 @@ version: '3'
 services:
 
   app:
-    image: spring-boot-monitoreo_prs
+    image: luistasayco2004/prs1_monitoreo_backend:definit
     ports:
       - "8080:8080"
-    # environment:
-    #   DATABASE_URL: r2dbc:pool:postgresql://ep-patient-glade-a500n7jv.us-east-2.aws.neon.tech/neondb?sslmode=require
-    #   DATABASE_USERNAME: neondb_owner
-    #   DATABASE_PASSWORD: E7ZoFl2PrvjX
+    environment:
+      DATABASE_URL: r2dbc:pool:postgresql://ep-patient-glade-a500n7jv.us-east-2.aws.neon.tech/neondb?sslmode=require
+      DATABASE_USERNAME: neondb_owner
+      DATABASE_PASSWORD: E7ZoFl2PrvjX

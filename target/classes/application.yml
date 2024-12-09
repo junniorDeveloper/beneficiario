@@ -2,6 +2,11 @@ spring:
   application:
     name: monitoreo
   r2dbc:
-    url: r2dbc:pool:postgresql://neondb_owner:E7ZoFl2PrvjX@ep-patient-glade-a500n7jv.us-east-2.aws.neon.tech/neondb?sslmode=require
+    url: ${DATABASE_URL}
+    # r2dbc:pool:postgresql://ep-patient-glade-a500n7jv.us-east-2.aws.neon.tech/neondb?sslmode=require
+    username: ${DATABASE_USERNAME}
+    # neondb_owner
+    password: ${DATABASE_PASSWORD}
+    # E7ZoFl2PrvjX
 server:
-  port: 8085
+  port: 8080
